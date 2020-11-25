@@ -1,0 +1,32 @@
+Input                     Output  
+
+add R🖾 R🖾 R🖾                     1110 🖾🖾🖾🖾 🖾🖾🖾🖾 🖾🖾🖾🖾
+subtract R🖾 R🖾 R🖾                1111 🖾🖾🖾🖾 🖾🖾🖾🖾 🖾🖾🖾🖾
+multiply R🖾 R🖾 R🖾                0111 🖾🖾🖾🖾 🖾🖾🖾🖾 🖾🖾🖾🖾
+
+and R🖾 R🖾 R🖾                     1000 🖾🖾🖾🖾 🖾🖾🖾🖾 🖾🖾🖾🖾
+or R🖾 R🖾 R🖾                      1001 🖾🖾🖾🖾 🖾🖾🖾🖾 🖾🖾🖾🖾
+xor R🖾 R🖾 R🖾                     1010 🖾🖾🖾🖾 🖾🖾🖾🖾 🖾🖾🖾🖾
+not R🖾 R🖾 R🖾                     1011 🖾🖾🖾🖾 🖾🖾🖾🖾 🖾🖾🖾🖾
+
+left shift R🖾 R🖾 R🖾              1100 🖾🖾🖾🖾 🖾🖾🖾🖾 🖾🖾🖾🖾
+right shift R🖾 R🖾 R🖾             1101 🖾🖾🖾🖾 🖾🖾🖾🖾 🖾🖾🖾🖾
+
+Interrupt 0                       0010 0000 0000 0000 
+Interrupt 1                       0010 0000 0000 0001
+
+move R🖾 🖾                         0001 🖾🖾🖾🖾 🖾🖾🖾🖾🖾🖾🖾🖾
+
+Jump 🖾                            0011 🖾🖾🖾🖾🖾🖾🖾🖾🖾🖾🖾🖾
+Compare R🖾 R🖾                     0100 0000 🖾🖾🖾🖾 🖾🖾🖾🖾
+BranchIfEqual 🖾                   0101 01 🖾🖾🖾🖾🖾🖾🖾🖾🖾🖾
+BranchIfNotEqual 🖾                0101 00 🖾🖾🖾🖾🖾🖾🖾🖾🖾🖾
+BranchIfGreaterThan 🖾             0101 10 🖾🖾🖾🖾🖾🖾🖾🖾🖾🖾
+BranchIfGreaterThanOrEqual 🖾      0101 11 🖾🖾🖾🖾🖾🖾🖾🖾🖾🖾
+
+Push R🖾                           0110 0000 0000 🖾🖾🖾🖾
+Pop R🖾                            0110 0100 0000 🖾🖾🖾🖾
+Call 🖾                            0110 10 🖾🖾🖾🖾🖾🖾🖾🖾🖾🖾
+Return                            0110110000000000
+
+Halt                              0000 0000 0000 0000
