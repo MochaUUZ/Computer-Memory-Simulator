@@ -4,8 +4,8 @@ All the assignments I had done in ICSI_404. Which becomes a computer representat
 
 404_#8_Assembler is separately from all the other assignment. 
 
--------Final Edition-------
--------Final Edition-------
--------Final Edition-------
--------Final Edition-------
--------Final Edition-------
+-------Final Edition-------\n
+-------Final Edition-------\n
+-------Final Edition-------\n
+-------Final Edition-------\n
+-------Final Edition-------\n
