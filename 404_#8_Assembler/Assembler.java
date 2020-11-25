@@ -23,6 +23,10 @@
  * 
  * 11/11/2020   Finishing the testing. Fixed some bugs on the Assembler. Added some touch-up and renovated the overall 
  *              format of output. Fixed some missing identation on the code. 
+ * 
+ * 11/18/2020 Implement addition operation: Jump, Compare, Branch 
+ * 
+ * 11/21/2020 Implement addition operation: Push, Pop, Call, Return
  * --------- FINAL EDITION --------- 
  * --------- FINAL EDITION --------- 
  * --------- FINAL EDITION --------- 
@@ -30,19 +34,8 @@
  * @author Sheng hao Dong
  */
 public class Assembler {
-
-    /**
-     * the class for handle all the possible error while parsing.
-     */
-    public static class ParseError extends Exception
-    {
-        private static final long serialVersionUID = 1L;
-
-        ParseError(String message)
-        {
-            super(message);
-        }
-    } // end of ParseError
+    private static int jumpOpCode = 0;
+    private static int branchOpCode = 0;
 
     /**
      * This is the main method of assembler. This method will be responsible for continue parsing 
@@ -114,6 +107,7 @@ public class Assembler {
     public static String Evaluate(String theWord) throws ParseError
     {
         char FirstCh = theWord.charAt(0); 
+        
 
         if( (FirstCh == 'R' || FirstCh == 'r') && Character.isDigit(theWord.charAt(1)) )
         {
@@ -124,25 +118,38 @@ public class Assembler {
         {
             // The command is a number. But before call the dedicated method for handling number, 
             // we need to check if the number is in-bound. 
-            try
+            if(jumpOpCode == 1)
             {
-                // Check if the number is in-bound. If not, throw an error.
-                int decimalF = Integer.parseInt(theWord);
-                if(decimalF > 127 || decimalF < -127) 
-                {
-                    // Since we are using 8 bit signed binary number, we actually only have 7 bit to 
-                    // represent a number. 
-                    throw new ParseError("Error: The number is out-of-bound. " + decimalF);
-                }
-                else
-                {
-                    // The number passed the check, call the dedicated method just for handling number.
-                    return number(decimalF, 8);
-                }
+                int decimalJ = Integer.parseInt(theWord);
+                return number(decimalJ, 12);
             }
-            catch(NumberFormatException e)
+            else if(branchOpCode == 1)
             {
-                System.out.println("Error: Your string contains non-digits.");
+                int decimalB = Integer.parseInt(theWord);
+                return number(decimalB, 10);
+            }
+            else
+            {
+                try
+                {
+                    // Check if the number is in-bound. If not, throw an error.
+                    int decimalF = Integer.parseInt(theWord);
+                    if(decimalF > 127 || decimalF < -127) 
+                    {
+                        // Since we are using 8 bit signed binary number, we actually only have 7 bit to 
+                        // represent a number. 
+                        throw new ParseError("Error: The number is out-of-bound. " + decimalF);
+                    }
+                    else
+                    {
+                        // The number passed the check, call the dedicated method just for handling number.
+                        return number(decimalF, 8);
+                    }
+                }
+                catch(NumberFormatException e)
+                {
+                    System.out.println("Error: Your string contains non-digits.");
+                }
             }
         }
         else if(Character.isLetter(FirstCh))
@@ -232,6 +239,32 @@ public class Assembler {
                 return "00100000";
             case "move":
                 return "0001";
+            case "jump": 
+                jumpOpCode = 1;
+                return "0011";
+            case "compare": 
+                return "01000000";
+            case "branchifequal":
+                branchOpCode = 1;
+                return "010101";
+            case "branchifnotequal":
+                branchOpCode = 1;
+                return "010100";
+            case "branchifgreaterthan":
+                branchOpCode = 1;
+                return "010110";
+            case "branchifgreaterthanorequal":
+                branchOpCode = 1;
+                return "010111";
+            case "push":
+                return "011000000000";
+            case "pop":
+                return "011001000000";
+            case "call":
+                branchOpCode = 1;
+                return "011010";
+            case "return":
+                return "0110110000000000";
             case "halt":
                 return "0000000000000000";
             default: 
@@ -248,7 +281,7 @@ public class Assembler {
      */
     public static String number(int decimalNumber, int bitSize) throws Assembler.ParseError
     {
-        int [] binary;
+        int [] binary = null;
 
         // Decide which bit size to use for storing.
         if(bitSize > 0 && bitSize <= 4)
@@ -259,16 +292,34 @@ public class Assembler {
         {
             binary = new int[8];
         }
+        else if(bitSize > 8 && bitSize <= 10)
+        {
+            binary = new int[10];
+        }
+        else if(bitSize > 10 && bitSize <= 12)
+        {
+            binary = new int[12];
+        }
         else
         {
-            throw new ParseError("Error: Can not have bitSize greater than 8 or lower than 0");
+            throw new ParseError("Error: Can not have bitSize greater than 12 or lower than 0");
         }
 
+        if(decimalNumber < 0 && binary.length >= 10)
+        {
+            binary[0] = 1;
+
+        }
         // Decide whether the number is positive or negative.
         boolean positive = true;
         if(decimalNumber >= 0)
         {
             positive = true; // This is a positive number.
+        }
+        else if(decimalNumber < 0 && binary.length >= 10)
+        {
+            positive = false; // This is a negative number. But we will treat it like a positive number. 
+            decimalNumber = Math.abs(decimalNumber); // Get ready for conversion.
         }
         else if(decimalNumber < 0)
         {
@@ -289,6 +340,12 @@ public class Assembler {
             binary[charLength] = result;
             charLength--;
         }
+        if(positive == false && binary.length >= 10)
+        {
+            positive = true;
+            binary[0] = 1;
+
+        }
 
         // Copy the machine code from int array to String [] so the return type match. 
         char[] binaryRepresentation = new char[binary.length];
@@ -303,6 +360,10 @@ public class Assembler {
             char cRepre = (char)(intRepre + '0');
             binaryRepresentation[i] = cRepre;
         }
+
+        // For assignment 9
+        jumpOpCode = 0;
+        branchOpCode = 0;
         
         String finalResult = new String(binaryRepresentation);
         return finalResult;
@@ -364,5 +425,18 @@ public class Assembler {
             return newToPush;
         }
     } // end of push(String)
+
+    /**
+     * the class for handle all the possible error while parsing.
+     */
+    public static class ParseError extends Exception
+    {
+        private static final long serialVersionUID = 1L;
+
+        ParseError(String message)
+        {
+            super(message);
+        }
+    } // end of ParseError
 
 } // end of class Assembler class
