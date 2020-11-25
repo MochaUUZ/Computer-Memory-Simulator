@@ -1,10 +1,18 @@
 /**
  * This is the class that represent a computer. 
  * Develop log: 
- * (10/13/20), Finish assignment 6, a test is not required.
- * (10/20/20), implemented the helper method to calculate binary to decmial. 
- * (10/25/20), working on assignment 7. 
- * (10/28/20), finished assignment 7.
+ * (10/13/20),	Finish assignment 6, a test is not required.
+ * (10/20/20),	implemented the helper method to calculate binary to decmial. 
+ * (10/25/20),	working on assignment 7. 
+ * (10/28/20),	finished assignment 7.
+ * 11/14/2020,	Start implementing assignment 9. Try to do part 1 and get the 
+ * 				foundation down for part 2. 
+ * 				UPDATE: Don't think I implement part 1 correctly. Will need clarification. 
+ * 11/15/2020 	Have a very big confusion on assignment 9 descrption. Can not continue until
+ * 				I clear my confusion. 
+ * 11/17/2020	The confusion is all crystal clear now. I will be starting to implementing part 2 of 
+ * 				assignment 9. 
+ * 			  
  * @author Sheng hao Dong
  */
 public class computer {
@@ -23,15 +31,19 @@ public class computer {
 	// This will hold the operation bit to let excute, store know what to do. 
 	bit[] opcode = new bit[4];
 
-	// Part 2(registers) of the assignment
+	// Part 2(registers) of the assignment (from Assignment 6)
 	longword[] Registers = new longword[16];
 	
-	// Part 4(decode) of the assignment. This is the op1 and op2. 
+	// Part 4(decode) of the assignment. This is the op1 and op2.  (From Assignment 6)
 	longword op1 = new longword();
 	longword op2 = new longword();
 	
-	// Part 4(execute) of the assignment, this is the where the result from the ALU will goto. 
+	// Part 4(execute) of the assignment, this is the where the result from the ALU will goto. (From Assignment 6)
 	longword result = new longword();
+
+	// Assignment 9, part 2, compare operation
+	bit isGreater = new bit();
+	bit isEqual = new bit();
 	
 	/**
 	 * A while loop that will be running until halted is not zero.
@@ -70,9 +82,21 @@ public class computer {
 		Impl_Longword accessToPC = new Impl_Longword();
 		accessToPC.original = PC;
 		
+
+
+
 		//System.out.println(accessToPC.getSigned());
+
+
+
+
+
 		currentInstruction = aMemory.read(accessToPC.original);
-		
+
+		/* TESTING ONLY */
+		//accessToPC.printBit(currentInstruction.getArray());
+		// END OF TESTING
+
 		// Create a longword which has a value of 2
 		Impl_Longword theNumberTwo = new Impl_Longword();
 		theNumberTwo.set(2);
@@ -140,7 +164,24 @@ public class computer {
 			return 0;
 
 		}
-		else if(decimalOpCode > 2) // ALU operation code
+		else if(decimalOpCode == 3) // Jump operation code.
+		{
+			// As assignment 9 specify, decode don't do anything for jump instruction.
+			System.out.println("Decode: Jump");
+			return 0;
+		}
+		else if(decimalOpCode == 4) // Compare operation code
+		{
+			// As assignment 9 specify, the store() should be use for compare instruction.
+			System.out.println("Decode: Compare");
+			return 0;
+		}
+		else if(decimalOpCode == 5) // Branch operation code
+		{	
+			// Based on assignment 9, decode doesn't do anything for branch.
+			return 0;
+		}
+		else if(decimalOpCode > 5) // ALU operation code
 		{  // Assignment 6 code, with some renovation for easy to read purpose. 
 
 			// Shifting the instruction where R3 is at the rightest index.
@@ -301,7 +342,41 @@ public class computer {
 				}
 			}
 		}
-		else if(decimalOpCode > 2) // ALU operation code
+		else if(decimalOpCode == 3) // Jump operation code
+		{
+			// As assignment 9 specify, execute don't do anything for jump instruction. 
+			System.out.println("Execute: jump");
+			return 0;
+		} 
+		else if(decimalOpCode == 4) // Compare operation code
+		{
+			// As assignment 9 specify, store() should be operating the compare instruction.
+			System.out.println("Execute: compare");
+			return 0;
+		}
+		else if(decimalOpCode == 5) // Branch operation code
+		{
+			
+			// Branch If Equal 			- 01   
+			// Branch Not Equal 		- 00
+			// Branch Greater Than 		- 10
+			// Greater Than or Equal 	- 11
+			bit checkEqual = copyOfInstruction.original.getArray()[5];
+			bit checkGreater = copyOfInstruction.original.getArray()[4];
+			// System.out.println("Branch\nCC: " + checkGreater.getValue() + checkEqual.getValue());
+
+			// first check for checkEqual, if it 1, and 
+			// isEqual is also 1, then read the number and store in result. 
+			// isEqual is 0, then store the value zero in result. And tell store to just return once detect the zero
+
+			// If checkEqual does not match, then check for checkGreater, if match, read and store, 
+			//if does not match, store zero in result. 
+
+			 
+
+			return 0;
+		}
+		else if(decimalOpCode > 5) // ALU operation code
 		{
 			// // Assignment 6 code, with some renovation for easy to read purpose. 
 			
@@ -379,7 +454,64 @@ public class computer {
 			// As assignment 7 specify, store don't do anything for interrupt instruction.
 			return 0;
 		}
-		else if(decimalOpCode > 2) // ALU operation code
+		else if(decimalOpCode == 3) // Jump operation code
+		{
+			Impl_Longword masking = new Impl_Longword();
+			masking.set(-1);
+			longword maskingRight12Bit = masking.rightShift(20);
+
+			Impl_Longword storeShift = new Impl_Longword();
+			storeShift.original = copyOfInstruction.rightShift(16);
+			
+			longword extractRight12Bit = storeShift.and(maskingRight12Bit);
+
+			PC.setArray(extractRight12Bit.getArray());
+		}
+		else if(decimalOpCode == 4) // Compare operation code
+		{ 
+			bit[] firstRegister = new bit[4];
+			for(int i = 8; i < 12; i++)
+			{
+				firstRegister[i-8] = copyOfInstruction.original.getArray()[i];
+			}
+			int leftRegister = bitToDecimal(firstRegister, 0); // the a in a < b, left of the comparision
+
+			bit[] secondRegister = new bit[4];
+			for(int j = 12; j < 16; j++)
+			{
+				secondRegister[j-12] = copyOfInstruction.original.getArray()[j];
+			}
+			int rightRegister = bitToDecimal(secondRegister, 0);
+
+			longword toBeFlip = new longword();
+			toBeFlip.setArray(Registers[rightRegister].getArray());
+
+			longword compareResult = rippleAdder.subtract(Registers[leftRegister], toBeFlip);
+			int resultOfCompare = bitToDecimal(compareResult.getArray(), 1);
+			if(resultOfCompare > 0)
+			{ // Means a is greater than b.
+				isGreater.setValue(1);
+				isEqual.setValue(0);
+			}
+			else if(resultOfCompare < 0)
+			{ // Means a is less than b
+				isGreater.setValue(0);
+				isEqual.setValue(0);
+			}
+			else
+			{ // Means a is equal to b.
+				isGreater.setValue(1);
+				isEqual.setValue(1);
+			}
+			System.out.println("The result: " + resultOfCompare);
+			System.out.println("isGreater: " + isGreater.getValue() + "\nisEqual: " + isEqual.getValue());
+		}
+		else if(decimalOpCode == 5) // Branch operation code
+		{
+			System.out.println("Store: Branch");
+			return 0;
+		}
+		else if(decimalOpCode > 5) // ALU operation code
 		{
 			// // Assignment 6 code, with some renovation for easy to read purpose. 
 
