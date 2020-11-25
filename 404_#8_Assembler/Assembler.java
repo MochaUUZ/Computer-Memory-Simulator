@@ -25,6 +25,8 @@
  *              format of output. Fixed some missing identation on the code. 
  * 
  * 11/18/2020 Implement addition operation: Jump, Compare, Branch 
+ * 
+ * 11/21/2020 Implement addition operation: Push, Pop, Call, Return
  * --------- FINAL EDITION --------- 
  * --------- FINAL EDITION --------- 
  * --------- FINAL EDITION --------- 
