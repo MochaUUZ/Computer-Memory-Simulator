@@ -1,12 +1,12 @@
 # ICSI_404
-All the assignments I had done in ICSI_404. Which becomes a computer representation altogether. 
-404_#6, 404_#7, 404_#9,404_#10 all build on 404_#5 therefore #5 will be one big program that holds these assignment. 
+All the assignments I had done during my time @ UAlbany, 404 class. Which becomes a computer representation altogether.<br/>
 
-404_#8_Assembler is separately from all the other assignment. 
+Assembler is separately from all the other assignments. <br/>
+
+***INFO***
+Please refer to the MIT-License on what are the thing you can do and shouldn't do.<br/>
+Thank you for your corporation. <br/>
+Happy Coding! uwu<br/>
 
 
-  -------Final Edition-------<br/>
-  -------Final Edition-------<br/>
-  -------Final Edition-------<br/>
-  -------Final Edition-------<br/>
-  -------Final Edition-------<br/>
+  -------Final Edition 03/19/2021-------<br/>
