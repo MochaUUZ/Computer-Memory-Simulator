@@ -3,8 +3,8 @@ All the assignments I had done during my time @ UAlbany, 404 class. Which become
 
 Assembler is separately from all the other assignments. <br/>
 
-***INFO***<br/>
-Please refer to the Apache-2.0 Permission License on what are the things you can do and shouldn't do.<br/>
+***NOTE***<br/>
+Please refer to the *Apache-2.0 Permission License* on what are the things you can do and shouldn't do.<br/>
 Thank you for your corporation. <br/>
 Happy Coding! uwu<br/>
 
